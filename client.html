@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Remote Desktop Viewer</title>
+</head>
+<body style="background:#000;margin:0;">
+  <img id="screen" style="width:100vw;height:100vh;object-fit:contain;" />
+  <script src="https://cdn.socket.io/4.7.1/socket.io.min.js"></script>
+  <script>
+    const socket = io("http://localhost:5000"); // Replace with host IP if on another machine
+    socket.on('connect', () => {
+      console.log('Connected');
+      setInterval(() => {
+        socket.emit('request_frame');
+      }, 100); // ~10 fps
+    });
+    socket.on('frame', (data) => {
+      document.getElementById("screen").src = "data:image/jpeg;base64," + data;
+    });
+  </script>
+</body>
+</html>
